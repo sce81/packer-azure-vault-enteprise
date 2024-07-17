@@ -59,7 +59,7 @@ build {
     execute_command = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'"
     inline = [
       "cd /tmp",
-      "git clone https://github.com/sce81/packer-azure-vault-enterprise.git",
+      "git clone -b Feature/windows https://github.com/sce81/packer-azure-vault-enterprise.git",
       "cd packer-azure-vault-enterprise/files/",
       "curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash",
       "sudo bash ./install-vault.sh --version ${var.VAULTVERSION}",
