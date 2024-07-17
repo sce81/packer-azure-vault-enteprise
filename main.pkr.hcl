@@ -38,30 +38,32 @@ source "azure-arm" "main" {
 build {
   sources = ["source.azure-arm.main"]
 
-  provisioner "file" {
-    source      = "files/run-vault.sh"
-    destination = "/tmp/run-vault"
-  }
-  provisioner "file" {
-    source      = "files/install-vault.sh"
-    destination = "/tmp/install-vault"
-  }
-  provisioner "file" {
-    source      = "files/supervisord.conf"
-    destination = "/tmp/supervisord.conf"
-  }
-  provisioner "file" {
-    source      = "files/update-certificate-store.sh"
-    destination = "/tmp/update-certificate-store.sh"
-  }
+//  provisioner "file" {
+//    source      = "files\\run-vault.sh"
+//    destination = "/tmp/run-vault.sh"
+//  }
+//  provisioner "file" {
+//    source      = "files\\install-vault.sh"
+//    destination = "/tmp/install-vault"
+//  }
+//  provisioner "file" {
+//    source      = "files\\supervisord.conf"
+//    destination = "/tmp/supervisord.conf"
+//  }
+//  provisioner "file" {
+//    source      = "files\\update-certificate-store.sh"
+//    destination = "/tmp/update-certificate-store.sh"
+//  }
 
   provisioner "shell" {
     execute_command = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'"
     inline = [
+      "cd /tmp",
+      "git clone https://github.com/sce81/packer-azure-vault-enterprise.git",
+      "cd packer-azure-vault-enterprise/files/",
       "curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash",
-      "/tmp/install-vault --version ${var.VAULTVERSION}",
-      "sudo mv /tmp/update-certificate-store.sh /opt/vault/tls/",
-
+      "sudo bash ./install-vault.sh --version ${var.VAULTVERSION}",
+      "sudo mv ./update-certificate-store.sh /opt/vault/tls/",
     ]
     inline_shebang = "/bin/sh -x"
   }
